@@ -5,20 +5,30 @@ import { Contact } from "../server/models/Contact";
 
 const app = express();
 
-let connected = false;
+let cachedDb = false;
 async function connectDb() {
-  if (connected) return;
+  if (cachedDb) return;
   const uri = process.env.MONGO_URI;
   if (!uri) {
-    console.warn("MONGO_URI not set");
-    return;
+    throw new Error("MONGO_URI environment variable is not set");
   }
   await mongoose.connect(uri);
-  connected = true;
+  cachedDb = true;
   console.log("Connected to MongoDB");
 }
 
 app.use(express.json());
+
+app.get("/api/health", async (_req, res) => {
+  try {
+    await connectDb();
+    const state = mongoose.connection.readyState;
+    res.json({ ok: true, mongoState: state, mongoUri: !!process.env.MONGO_URI });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    res.json({ ok: false, error: message, mongoUri: !!process.env.MONGO_URI });
+  }
+});
 
 app.post("/api/contact", async (req, res) => {
   const { name, email, message } = req.body;
@@ -32,8 +42,9 @@ app.post("/api/contact", async (req, res) => {
     console.log(`New contact from ${name} (${email}): ${message}`);
     res.json({ success: true, contactId: contact._id });
   } catch (err) {
-    console.error("Failed to save contact:", err);
-    res.status(500).json({ error: "Failed to save message" });
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    console.error("Failed to save contact:", errorMessage);
+    res.status(500).json({ error: errorMessage });
   }
 });
 
