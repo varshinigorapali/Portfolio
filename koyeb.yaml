@@ -1,0 +1,16 @@
+name: portfolio-api
+service:
+  port: 3000
+  source:
+    github:
+      branch: master
+      repository: varshinigorapali/Portfolio
+  build:
+    command: npm install && npm run build
+  run:
+    command: npm start
+  env:
+    - key: NODE_ENV
+      value: production
+    - key: MONGO_URI
+      secret: true
