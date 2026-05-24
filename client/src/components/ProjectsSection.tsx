@@ -9,7 +9,7 @@ const projects: Project[] = [
     title: "QuickKart",
     description:
       "An innovative 3D product viewer that allows users to visualize products in three dimensions. This project showcases advanced web technologies for interactive product visualization, enhancing the e-commerce experience.",
-    techStack: ["React", "Three.js", "WebGL", "JavaScript"],
+    techStack: ["React", "MongoDB", "CSS", "HTML", "JavaScript"],
   },
 ];
 
