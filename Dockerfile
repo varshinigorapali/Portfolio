@@ -8,7 +8,7 @@ RUN npm run build
 FROM node:22-alpine AS run
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --production
+RUN npm ci
 COPY --from=build /app/dist ./dist
 EXPOSE 3000
 ENV NODE_ENV=production
