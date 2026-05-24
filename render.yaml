@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: varshini-portfolio
+    runtime: node
+    repo: https://github.com/varshinigorapali/Portfolio.git
+    branch: master
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
